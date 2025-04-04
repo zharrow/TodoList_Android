@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Styles des textes -->
+    <style name="TextAppearance.TaskManager.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
+        <item name="android:textSize">96sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.TaskManager.Headline2" parent="TextAppearance.MaterialComponents.Headline2">
+        <item name="android:textSize">60sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.TaskManager.Headline3" parent="TextAppearance.MaterialComponents.Headline3">
+        <item name="android:textSize">48sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.TaskManager.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textSize">34sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.TaskManager.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.TaskManager.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.TaskManager.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.TaskManager.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.TaskManager.Body1" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.TaskManager.Body2" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <style name="TextAppearance.TaskManager.Caption" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <style name="TextAppearance.TaskManager.Overline" parent="TextAppearance.MaterialComponents.Overline">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <!-- Styles des composants -->
+    <style name="Widget.TaskManager.CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardElevation">2dp</item>
+        <item name="cardCornerRadius">8dp</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="contentPadding">16dp</item>
+        <item name="rippleColor">@color/ripple</item>
+    </style>
+
+    <style name="Widget.TaskManager.BottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="backgroundTint">@color/surface</item>
+        <item name="itemIconTint">@color/primary</item>
+        <item name="itemTextColor">@color/primary</item>
+        <item name="itemRippleColor">@color/ripple</item>
+        <item name="elevation">8dp</item>
+    </style>
+
+    <style name="Widget.TaskManager.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:background">@color/primary</item>
+        <item name="titleTextColor">@color/on_primary</item>
+        <item name="subtitleTextColor">@color/on_primary</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+    <style name="Widget.TaskManager.FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="backgroundTint">@color/secondary</item>
+        <item name="tint">@color/on_secondary</item>
+        <item name="rippleColor">@color/ripple</item>
+    </style>
+
+    <style name="Widget.TaskManager.Chip" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="chipBackgroundColor">@color/surface</item>
+        <item name="chipStrokeColor">@color/primary</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="rippleColor">@color/ripple</item>
+    </style>
+
+    <!-- Styles pour les animations -->
+    <style name="Animation.TaskManager.FastOutSlowIn" parent="android:Animation">
+        <item name="android:interpolator">@android:interpolator/fast_out_slow_in</item>
+        <item name="android:duration">300</item>
+    </style>
+
+    <style name="Animation.TaskManager.FastOutLinearIn" parent="android:Animation">
+        <item name="android:interpolator">@android:interpolator/fast_out_linear_in</item>
+        <item name="android:duration">250</item>
+    </style>
+
+    <style name="Animation.TaskManager.LinearOutSlowIn" parent="android:Animation">
+        <item name="android:interpolator">@android:interpolator/linear_out_slow_in</item>
+        <item name="android:duration">300</item>
+    </style>
+</resources>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.todolist.HomeFragment"
+        android:label="@string/home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_tasks"
+        android:name="com.example.todolist.TaskListFragment"
+        android:label="@string/tasks"
+        tools:layout="@layout/fragment_task_list">
+        <action
+            android:id="@+id/action_navigation_tasks_to_taskDetailFragment"
+            app:destination="@id/taskDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_navigation_tasks_to_addEditTaskFragment"
+            app:destination="@id/addEditTaskFragment"
+            app:enterAnim="@anim/slide_in_up"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_down" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_categories"
+        android:name="com.example.todolist.CategoriesFragment"
+        android:label="@string/categories"
+        tools:layout="@layout/fragment_categories">
+        <action
+            android:id="@+id/action_navigation_categories_to_categoryTasksFragment"
+            app:destination="@id/categoryTasksFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.example.todolist.ProfileFragment"
+        android:label="@string/profile"
+        tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/taskDetailFragment"
+        android:name="com.example.todolist.TaskDetailFragment"
+        android:label="@string/task_details"
+        tools:layout="@layout/fragment_task_detail">
+        <argument
+            android:name="taskId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_taskDetailFragment_to_addEditTaskFragment"
+            app:destination="@id/addEditTaskFragment"
+            app:enterAnim="@anim/slide_in_up"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_down" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addEditTaskFragment"
+        android:name="com.example.todolist.AddEditTaskFragment"
+        android:label="@string/add_task"
+        tools:layout="@layout/fragment_add_edit_task">
+        <argument
+            android:name="taskId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+        <argument
+            android:name="categoryId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/categoryTasksFragment"
+        android:name="com.example.todolist.CategoryTasksFragment"
+        android:label="@string/category_tasks"
+        tools:layout="@layout/fragment_category_tasks">
+        <argument
+            android:name="categoryId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_categoryTasksFragment_to_taskDetailFragment"
+            app:destination="@id/taskDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_categoryTasksFragment_to_addEditTaskFragment"
+            app:destination="@id/addEditTaskFragment"
+            app:enterAnim="@anim/slide_in_up"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_down" />
+    </fragment>
+</navigation>

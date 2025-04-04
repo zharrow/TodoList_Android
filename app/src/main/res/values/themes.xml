@@ -1,9 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.TodoList" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <!-- Thème de base -->
+    <style name="Base.Theme.TodoList" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Couleurs primaires -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+
+        <!-- Couleurs secondaires -->
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryVariant">@color/secondary_variant</item>
+        <item name="colorOnSecondary">@color/on_secondary</item>
+
+        <!-- Couleurs d'arrière-plan -->
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorError">@color/error</item>
+        <item name="colorOnBackground">@color/on_background</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorOnError">@color/on_error</item>
+
+        <!-- Status bar et navigation bar -->
+        <item name="android:statusBarColor">@color/primary_variant</item>
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">true</item>
+
+        <!-- Éléments de l'interface -->
+        <item name="materialCardViewStyle">@style/Widget.TaskManager.CardView</item>
+        <item name="bottomNavigationStyle">@style/Widget.TaskManager.BottomNavigation</item>
+        <item name="toolbarStyle">@style/Widget.TaskManager.Toolbar</item>
+        <item name="floatingActionButtonStyle">@style/Widget.TaskManager.FloatingActionButton</item>
+        <item name="chipStyle">@style/Widget.TaskManager.Chip</item>
+
+        <!-- Animations -->
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="android:windowEnterTransition">@android:transition/slide_right</item>
+        <item name="android:windowExitTransition">@android:transition/slide_left</item>
     </style>
 
-    <style name="Theme.TodoList" parent="Base.Theme.TodoList" />
+    <style name="Theme.TodoList" parent="Base.Theme.TodoList"/>
+
+    <!-- Thème pour l'écran de démarrage -->
+    <style name="Theme.TodoList.Splash" parent="Theme.TodoList">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>

@@ -6,6 +6,7 @@ android {
     namespace = "com.example.todolist"
     compileSdk = 35
 
+
     defaultConfig {
         applicationId = "com.example.todolist"
         minSdk = 35
@@ -15,6 +16,11 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
 
     buildTypes {
         release {
@@ -32,12 +38,17 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.room.common)
+    implementation(libs.room.runtime)
+    implementation(libs.navigation.runtime)
+    implementation(libs.navigation.ui)
+    implementation(libs.navigation.fragment)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    annotationProcessor(libs.room.compiler)
 }
