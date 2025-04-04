@@ -68,9 +68,13 @@
     <string name="edit_task">Modifier la tâche</string>
     <string name="description">Description</string>
     <string name="mark_as_complete">Marquer comme terminée</string>
+    <string name="mark_as_incomplete">Marquer comme non terminée</string>
+    <string name="task_marked_as_incomplete">Tâche marquée comme non terminée</string>
+
 
     <string name="delete_task">Supprimer la tâche</string>
     <string name="category_tasks">Tâches par catégorie</string>
+
 
     <!-- Profile -->
     <string name="notifications">Notifications</string>

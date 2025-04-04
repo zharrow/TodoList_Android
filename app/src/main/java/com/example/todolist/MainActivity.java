@@ -1,22 +1,13 @@
 package com.example.todolist;
 
 import android.os.Bundle;
-
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
-import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
 
 import com.example.todolist.databinding.ActivityMainBinding;
 
@@ -40,55 +31,69 @@ public class MainActivity extends AppCompatActivity {
 
         // Configuration du FAB
         setupFab();
+
+        // Assurez-vous que le FAB est visible par défaut
+        binding.fab.setVisibility(View.VISIBLE);
     }
 
     private void setupNavigation() {
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        // Obtenir le NavHostFragment et le NavController
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment);
 
-        // Configure les destinations de niveau supérieur
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home,
-                R.id.navigation_tasks,
-                R.id.navigation_categories,
-                R.id.navigation_profile)
-                .build();
+        if (navHostFragment != null) {
+            navController = navHostFragment.getNavController();
 
-        // Configure la toolbar avec le navController
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+            // Configure les destinations de niveau supérieur
+            AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.navigation_home,
+                    R.id.navigation_tasks,
+                    R.id.navigation_categories,
+                    R.id.navigation_profile)
+                    .build();
 
-        // Configure la bottom navigation avec le navController
-        NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
+            // Configure la toolbar avec le navController
+            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        // Gestion de la visibilité du FAB et de la bottom navigation
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            // Afficher la bottom navigation uniquement pour les destinations de premier niveau
-            if (destination.getId() == R.id.navigation_home ||
-                    destination.getId() == R.id.navigation_tasks ||
-                    destination.getId() == R.id.navigation_categories ||
-                    destination.getId() == R.id.navigation_profile) {
-                showBottomNavigation();
-            } else {
-                hideBottomNavigation();
-            }
+            // Configure la bottom navigation avec le navController
+            NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
 
-            // Afficher le FAB uniquement sur les écrans appropriés
-            if (destination.getId() == R.id.navigation_tasks ||
-                    destination.getId() == R.id.navigation_home) {
-                showFab();
-            } else if (destination.getId() == R.id.navigation_categories) {
-                // Changer l'icône du FAB pour l'écran des catégories
-                binding.fab.setImageResource(R.drawable.ic_add);
-                binding.fab.setContentDescription(getString(R.string.add_category));
-                showFab();
-            } else {
-                hideFab();
-            }
+            // Gestion de la visibilité du FAB et de la bottom navigation
+            navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+                // Afficher la bottom navigation uniquement pour les destinations de premier niveau
+                if (destination.getId() == R.id.navigation_home ||
+                        destination.getId() == R.id.navigation_tasks ||
+                        destination.getId() == R.id.navigation_categories ||
+                        destination.getId() == R.id.navigation_profile) {
+                    showBottomNavigation();
+                } else {
+                    hideBottomNavigation();
+                }
 
-            // Configurer le titre de la toolbar en fonction de la destination
-            if (destination.getId() == R.id.navigation_home) {
-                Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.app_name);
-            }
-        });
+                // Afficher le FAB uniquement sur les écrans appropriés
+                if (destination.getId() == R.id.navigation_tasks ||
+                        destination.getId() == R.id.navigation_home) {
+                    binding.fab.setImageResource(R.drawable.ic_add);
+                    binding.fab.setContentDescription(getString(R.string.add_task));
+                    showFab();
+                } else if (destination.getId() == R.id.navigation_categories) {
+                    // Changer l'icône du FAB pour l'écran des catégories
+                    binding.fab.setImageResource(R.drawable.ic_add);
+                    binding.fab.setContentDescription(getString(R.string.add_category));
+                    showFab();
+                } else {
+                    hideFab();
+                }
+
+                // Configurer le titre de la toolbar en fonction de la destination
+                if (destination.getId() == R.id.navigation_home) {
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.app_name);
+                }
+            });
+        } else {
+            // Gérer le cas où le NavHostFragment n'a pas été trouvé
+            throw new IllegalStateException("NavHostFragment not found");
+        }
     }
 
     private void setupFab() {
@@ -131,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showFab() {
         if (binding.fab.getVisibility() != View.VISIBLE) {
+            binding.fab.setVisibility(View.VISIBLE);
             AnimationUtils.showFab(binding.fab);
         }
     }
