@@ -27,6 +27,9 @@ public interface CategoryDao {
     @Query("SELECT * FROM categories WHERE userId = :userId ORDER BY name ASC")
     LiveData<List<Category>> getAllCategoriesByUserId(long userId);
 
+    @Query("SELECT * FROM categories WHERE userId = :userId AND name = 'Sans Catégorie' LIMIT 1")
+    Category findDefaultCategorySync(long userId);
+
     @Query("DELETE FROM categories WHERE userId = :userId")
     void deleteAllCategoriesByUserId(long userId);
 }

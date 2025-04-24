@@ -1,12 +1,13 @@
 package com.example.todolist;
 
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,17 +23,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.todolist.databinding.DialogAddEditCategoryBinding;
 import com.example.todolist.databinding.FragmentCategoriesBinding;
 import com.example.todolist.databinding.ItemCategoryBinding;
-import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CategoriesFragment extends Fragment {
 
     private FragmentCategoriesBinding binding;
     private CategoryViewModel viewModel;
     private CategoryAdapter adapter;
+
+    // Mapping des couleurs et icônes pour simplifier la récupération
+    private final Map<Integer, String> colorMapping = new HashMap<>();
+    private final Map<Integer, String> iconMapping = new HashMap<>();
 
     @Nullable
     @Override
@@ -47,6 +53,9 @@ public class CategoriesFragment extends Fragment {
 
         // Initialiser le ViewModel
         viewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
+
+        // Initialiser les mappings
+        initMappings();
 
         // Configurer la RecyclerView
         setupRecyclerView();
@@ -64,6 +73,22 @@ public class CategoriesFragment extends Fragment {
         if (getArguments() != null && getArguments().getBoolean("showAddCategoryDialog", false)) {
             showAddCategoryDialog();
         }
+    }
+
+    private void initMappings() {
+        // Couleurs
+        colorMapping.put(R.id.chip_color_default, "default");
+        colorMapping.put(R.id.chip_color_work, "work");
+        colorMapping.put(R.id.chip_color_personal, "personal");
+        colorMapping.put(R.id.chip_color_shopping, "shopping");
+        colorMapping.put(R.id.chip_color_health, "health");
+
+        // Icônes
+        iconMapping.put(R.id.icon_category, "category");
+        iconMapping.put(R.id.icon_work, "work");
+        iconMapping.put(R.id.icon_home, "home");
+        iconMapping.put(R.id.icon_shopping, "shopping");
+        iconMapping.put(R.id.icon_health, "health");
     }
 
     private void setupRecyclerView() {
@@ -116,6 +141,12 @@ public class CategoriesFragment extends Fragment {
         // Initialisation de la vue du dialogue
         DialogAddEditCategoryBinding dialogBinding = DialogAddEditCategoryBinding.inflate(LayoutInflater.from(requireContext()));
 
+        // Personnalisation des couleurs des boutons radio
+        setupColorSelectors(dialogBinding.colorChips);
+
+        // Personnalisation des icônes des boutons radio
+        setupIconSelectors(dialogBinding.iconGroup);
+
         // Création du dialogue
         AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
                 .setView(dialogBinding.getRoot())
@@ -140,36 +171,18 @@ public class CategoriesFragment extends Fragment {
             }
 
             // Récupérer la couleur sélectionnée
-            String color = "default"; // Par défaut
-            for (int i = 0; i < dialogBinding.colorChips.getChildCount(); i++) {
-                View child = dialogBinding.colorChips.getChildAt(i);
-                if (child instanceof Chip && ((Chip) child).isChecked()) {
-                    int childId = child.getId();
-                    // Extraire la couleur à partir de l'ID du chip
-                    if (childId == R.id.chip_color_work) {
-                        color = "work";
-                    } else if (childId == R.id.chip_color_personal) {
-                        color = "personal";
-                    } else if (childId == R.id.chip_color_shopping) {
-                        color = "shopping";
-                    } else if (childId == R.id.chip_color_health) {
-                        color = "health";
-                    } else if (childId == R.id.chip_color_education) {
-                        color = "education";
-                    } else if (childId == R.id.chip_color_finance) {
-                        color = "finance";
-                    } else if (childId == R.id.chip_color_social) {
-                        color = "social";
-                    } else {
-                        color = "default";
-                    }
-                    break;
-                }
+            String color = "default";
+            int selectedColorId = dialogBinding.colorChips.getCheckedRadioButtonId();
+            if (colorMapping.containsKey(selectedColorId)) {
+                color = colorMapping.get(selectedColorId);
             }
 
-            // TODO: Implémenter la sélection d'icône
-            // Pour le moment, utilisons une icône par défaut
+            // Récupérer l'icône sélectionnée
             String icon = "category";
+            int selectedIconId = dialogBinding.iconGroup.getCheckedRadioButtonId();
+            if (iconMapping.containsKey(selectedIconId)) {
+                icon = iconMapping.get(selectedIconId);
+            }
 
             // Sauvegarder la catégorie
             viewModel.saveCategory(name, color, icon);
@@ -178,6 +191,32 @@ public class CategoriesFragment extends Fragment {
 
         // Afficher le dialogue
         dialog.show();
+    }
+
+    private void setupColorSelectors(RadioGroup colorGroup) {
+        // Appliquer les couleurs spécifiques à chaque bouton radio
+        applyColorToRadioButton((RadioButton) colorGroup.findViewById(R.id.chip_color_default),
+                R.color.category_default);
+        applyColorToRadioButton((RadioButton) colorGroup.findViewById(R.id.chip_color_work),
+                R.color.category_work);
+        applyColorToRadioButton((RadioButton) colorGroup.findViewById(R.id.chip_color_personal),
+                R.color.category_personal);
+        applyColorToRadioButton((RadioButton) colorGroup.findViewById(R.id.chip_color_shopping),
+                R.color.category_shopping);
+        applyColorToRadioButton((RadioButton) colorGroup.findViewById(R.id.chip_color_health),
+                R.color.category_health);
+    }
+
+    private void applyColorToRadioButton(RadioButton button, int colorResId) {
+        if (button != null) {
+            button.setBackgroundTintList(ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), colorResId)));
+        }
+    }
+
+    private void setupIconSelectors(RadioGroup iconGroup) {
+        // Configurer les icônes pour chaque bouton
+        // Dans une implémentation réelle, vous devriez définir des drawables différents par icône
     }
 
     private void showDeleteCategoryDialog(Category category) {
@@ -263,8 +302,8 @@ public class CategoriesFragment extends Fragment {
                         ContextCompat.getColor(binding.getRoot().getContext(), colorRes));
 
                 // Définir l'icône
-                // Pour le moment, utilisons une icône générique
-                binding.ivCategoryIcon.setImageResource(R.drawable.ic_category);
+                int iconRes = getIconResourceForCategory(category.getIcon());
+                binding.ivCategoryIcon.setImageResource(iconRes);
 
                 // Définir le nombre de tâches (à implémenter)
                 // TODO: Implémenter le comptage des tâches par catégorie
@@ -299,6 +338,24 @@ public class CategoriesFragment extends Fragment {
                     return R.color.category_social;
                 } else {
                     return R.color.category_default;
+                }
+            }
+
+            private int getIconResourceForCategory(String icon) {
+                if (icon == null || icon.isEmpty()) {
+                    return R.drawable.ic_category;
+                }
+
+                if ("work".equals(icon)) {
+                    return R.drawable.ic_work;
+                } else if ("home".equals(icon)) {
+                    return R.drawable.ic_home;
+                } else if ("shopping".equals(icon)) {
+                    return R.drawable.ic_category; // Remplacer par une icône de shopping
+                } else if ("health".equals(icon)) {
+                    return R.drawable.ic_category; // Remplacer par une icône de santé
+                } else {
+                    return R.drawable.ic_category;
                 }
             }
         }

@@ -37,76 +37,60 @@
         android:text="@string/select_color"
         android:textAppearance="@style/TextAppearance.TaskManager.Subtitle2" />
 
-    <HorizontalScrollView
+    <RadioGroup
+        android:id="@+id/color_chips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:scrollbars="none">
+        android:orientation="horizontal"
+        android:gravity="center">
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/color_chips"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:singleSelection="true">
+        <RadioButton
+            android:id="@+id/chip_color_default"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/circle_color_selector"
+            android:button="@null"
+            android:checked="true"
+            android:tag="#9C27B0" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_color_default"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                app:chipBackgroundColor="@color/category_default" />
+        <RadioButton
+            android:id="@+id/chip_color_work"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/circle_color_selector"
+            android:button="@null"
+            android:tag="#2196F3" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_color_work"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:chipBackgroundColor="@color/category_work" />
+        <RadioButton
+            android:id="@+id/chip_color_personal"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/circle_color_selector"
+            android:button="@null"
+            android:tag="#FF4081" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_color_personal"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:chipBackgroundColor="@color/category_personal" />
+        <RadioButton
+            android:id="@+id/chip_color_shopping"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/circle_color_selector"
+            android:button="@null"
+            android:tag="#FF9800" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_color_shopping"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:chipBackgroundColor="@color/category_shopping" />
+        <RadioButton
+            android:id="@+id/chip_color_health"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/circle_color_selector"
+            android:button="@null"
+            android:tag="#4CAF50" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_color_health"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:chipBackgroundColor="@color/category_health" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_color_education"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:chipBackgroundColor="@color/category_education" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_color_finance"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:chipBackgroundColor="@color/category_finance" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_color_social"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:chipBackgroundColor="@color/category_social" />
-        </com.google.android.material.chip.ChipGroup>
-    </HorizontalScrollView>
+    </RadioGroup>
 
     <TextView
         android:layout_width="match_parent"
@@ -115,13 +99,60 @@
         android:text="@string/select_icon"
         android:textAppearance="@style/TextAppearance.TaskManager.Subtitle2" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_icons"
+    <RadioGroup
+        android:id="@+id/icon_group"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="5" />
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <RadioButton
+            android:id="@+id/icon_category"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/icon_selector"
+            android:button="@null"
+            android:checked="true"
+            android:tag="category" />
+
+        <RadioButton
+            android:id="@+id/icon_work"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/icon_selector"
+            android:button="@null"
+            android:tag="work" />
+
+        <RadioButton
+            android:id="@+id/icon_home"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/icon_selector"
+            android:button="@null"
+            android:tag="home" />
+
+        <RadioButton
+            android:id="@+id/icon_shopping"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/icon_selector"
+            android:button="@null"
+            android:tag="shopping" />
+
+        <RadioButton
+            android:id="@+id/icon_health"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/icon_selector"
+            android:button="@null"
+            android:tag="health" />
+
+    </RadioGroup>
 
     <LinearLayout
         android:layout_width="match_parent"

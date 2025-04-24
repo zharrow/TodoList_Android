@@ -1,30 +1,39 @@
 package com.example.todolist;
 
 import android.app.Application;
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class TaskRepository {
     private final TaskDao taskDao;
+    private final Executor executor = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public TaskRepository(Application application) {
         AppDatabase db = AppDatabase.getInstance(application);
         taskDao = db.taskDao();
     }
 
-    public long insert(Task task) {
-        return new InsertTaskAsyncTask(taskDao).doInBackground(task);
+    public void insert(Task task, OnTaskInsertedCallback callback) {
+        executor.execute(() -> {
+            long id = taskDao.insert(task);
+            // Retourner au thread principal pour le callback
+            mainHandler.post(() -> callback.onTaskInserted(id));
+        });
     }
 
     public void update(Task task) {
-        new UpdateTaskAsyncTask(taskDao).execute(task);
+        executor.execute(() -> taskDao.update(task));
     }
 
     public void delete(Task task) {
-        new DeleteTaskAsyncTask(taskDao).execute(task);
+        executor.execute(() -> taskDao.delete(task));
     }
 
     public LiveData<Task> getTaskById(long taskId) {
@@ -48,61 +57,11 @@ public class TaskRepository {
     }
 
     public void deleteAllTasksByUserId(long userId) {
-        new DeleteAllTasksByUserIdAsyncTask(taskDao).execute(userId);
+        executor.execute(() -> taskDao.deleteAllTasksByUserId(userId));
     }
 
-    private static class InsertTaskAsyncTask extends AsyncTask<Task, Void, Long> {
-        private TaskDao taskDao;
-
-        private InsertTaskAsyncTask(TaskDao taskDao) {
-            this.taskDao = taskDao;
-        }
-
-        @Override
-        protected Long doInBackground(Task... tasks) {
-            return taskDao.insert(tasks[0]);
-        }
-    }
-
-    private static class UpdateTaskAsyncTask extends AsyncTask<Task, Void, Void> {
-        private TaskDao taskDao;
-
-        private UpdateTaskAsyncTask(TaskDao taskDao) {
-            this.taskDao = taskDao;
-        }
-
-        @Override
-        protected Void doInBackground(Task... tasks) {
-            taskDao.update(tasks[0]);
-            return null;
-        }
-    }
-
-    private static class DeleteTaskAsyncTask extends AsyncTask<Task, Void, Void> {
-        private TaskDao taskDao;
-
-        private DeleteTaskAsyncTask(TaskDao taskDao) {
-            this.taskDao = taskDao;
-        }
-
-        @Override
-        protected Void doInBackground(Task... tasks) {
-            taskDao.delete(tasks[0]);
-            return null;
-        }
-    }
-
-    private static class DeleteAllTasksByUserIdAsyncTask extends AsyncTask<Long, Void, Void> {
-        private TaskDao taskDao;
-
-        private DeleteAllTasksByUserIdAsyncTask(TaskDao taskDao) {
-            this.taskDao = taskDao;
-        }
-
-        @Override
-        protected Void doInBackground(Long... userIds) {
-            taskDao.deleteAllTasksByUserId(userIds[0]);
-            return null;
-        }
+    // Interface pour le callback d'insertion
+    public interface OnTaskInsertedCallback {
+        void onTaskInserted(long taskId);
     }
 }

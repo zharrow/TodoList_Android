@@ -41,15 +41,16 @@ public class CategoryViewModel extends AndroidViewModel {
         }
 
         Category category = new Category(name, color, icon, currentUserId);
-        long categoryId = categoryRepository.insert(category);
 
-        if (categoryId > 0) {
-            categorySaved.setValue(true);
-        } else {
-            errorMessage.setValue("Erreur lors de la sauvegarde de la catégorie");
-        }
-
-        isLoading.setValue(false);
+        // Utiliser la nouvelle approche avec callback
+        categoryRepository.insert(category, categoryId -> {
+            if (categoryId > 0) {
+                categorySaved.setValue(true);
+            } else {
+                errorMessage.setValue("Erreur lors de la sauvegarde de la catégorie");
+            }
+            isLoading.setValue(false);
+        });
     }
 
     public void updateCategory(Category category) {

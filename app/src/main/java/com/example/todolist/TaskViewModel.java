@@ -8,9 +8,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class TaskViewModel extends AndroidViewModel {
     private final TaskRepository taskRepository;
+    private final CategoryRepository categoryRepository;
+    private final Executor backgroundExecutor = Executors.newSingleThreadExecutor();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> taskSaved = new MutableLiveData<>(false);
@@ -20,6 +24,7 @@ public class TaskViewModel extends AndroidViewModel {
     public TaskViewModel(@NonNull Application application) {
         super(application);
         taskRepository = new TaskRepository(application);
+        categoryRepository = new CategoryRepository(application);
         currentUserId = SharedPreferencesManager.getUserId(application);
     }
 
@@ -47,7 +52,7 @@ public class TaskViewModel extends AndroidViewModel {
         return taskRepository.getTaskById(taskId);
     }
 
-    public void saveTask(String title, String description, String dueDate, Priority priority, long categoryId) {
+    public void saveTask(String title, String description, String dueDate, Priority priority, Long categoryId) {
         isLoading.setValue(true);
 
         if (title.isEmpty()) {
@@ -56,16 +61,51 @@ public class TaskViewModel extends AndroidViewModel {
             return;
         }
 
+        backgroundExecutor.execute(() -> {
+            // Determine the category to use
+            long finalCategoryId;
+            if (categoryId == null || categoryId == -1) {
+                // Get or create default category synchronously
+                Category defaultCategory = categoryRepository.getOrCreateDefaultCategory(currentUserId);
+                finalCategoryId = defaultCategory.getId();
+            } else {
+                // Verify the provided category exists
+                Category category = categoryRepository.getCategoryById(categoryId).getValue();
+                if (category == null) {
+                    // If category doesn't exist, use default
+                    Category defaultCategory = categoryRepository.getOrCreateDefaultCategory(currentUserId);
+                    finalCategoryId = defaultCategory.getId();
+                } else {
+                    finalCategoryId = categoryId;
+                }
+            }
+
+            // Create and insert the task
+            Task task = new Task(title, description, dueDate, priority, finalCategoryId, currentUserId);
+
+            taskRepository.insert(task, taskId -> {
+                if (taskId > 0) {
+                    taskSaved.setValue(true);
+                } else {
+                    errorMessage.setValue("Erreur lors de la sauvegarde de la tâche");
+                }
+                isLoading.setValue(false);
+            });
+        });
+    }
+
+    // Helper method to create task
+    private void createTask(String title, String description, String dueDate, Priority priority, long categoryId) {
         Task task = new Task(title, description, dueDate, priority, categoryId, currentUserId);
-        long taskId = taskRepository.insert(task);
 
-        if (taskId > 0) {
-            taskSaved.setValue(true);
-        } else {
-            errorMessage.setValue("Erreur lors de la sauvegarde de la tâche");
-        }
-
-        isLoading.setValue(false);
+        taskRepository.insert(task, taskId -> {
+            if (taskId > 0) {
+                taskSaved.setValue(true);
+            } else {
+                errorMessage.setValue("Erreur lors de la sauvegarde de la tâche");
+            }
+            isLoading.setValue(false);
+        });
     }
 
     public void updateTask(Task task) {
@@ -122,4 +162,3 @@ public class TaskViewModel extends AndroidViewModel {
         taskDeleted.setValue(false);
     }
 }
-

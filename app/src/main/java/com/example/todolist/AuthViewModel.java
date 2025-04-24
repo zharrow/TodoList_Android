@@ -62,16 +62,16 @@ public class AuthViewModel extends AndroidViewModel {
                 isLoading.setValue(false);
             } else {
                 User newUser = new User(username, email, password);
-                long userId = userRepository.insert(newUser);
-
-                if (userId > 0) {
-                    // Sauvegarder l'ID de l'utilisateur connecté
-                    SharedPreferencesManager.saveUserId(getApplication(), userId);
-                    isLoggedIn.setValue(true);
-                } else {
-                    errorMessage.setValue("Erreur lors de l'inscription");
-                }
-                isLoading.setValue(false);
+                userRepository.insert(newUser, userId -> {
+                    if (userId > 0) {
+                        // Sauvegarder l'ID de l'utilisateur connecté
+                        SharedPreferencesManager.saveUserId(getApplication(), userId);
+                        isLoggedIn.setValue(true);
+                    } else {
+                        errorMessage.setValue("Erreur lors de l'inscription");
+                    }
+                    isLoading.setValue(false);
+                });
             }
         });
     }

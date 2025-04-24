@@ -1,28 +1,37 @@
 package com.example.todolist;
 
 import android.app.Application;
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.lifecycle.LiveData;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 public class UserRepository {
     private final UserDao userDao;
+    private final Executor executor = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public UserRepository(Application application) {
         AppDatabase db = AppDatabase.getInstance(application);
         userDao = db.userDao();
     }
 
-    public long insert(User user) {
-        return new InsertUserAsyncTask(userDao).doInBackground(user);
+    public void insert(User user, OnUserInsertedCallback callback) {
+        executor.execute(() -> {
+            long id = userDao.insert(user);
+            mainHandler.post(() -> callback.onUserInserted(id));
+        });
     }
 
     public void update(User user) {
-        new UpdateUserAsyncTask(userDao).execute(user);
+        executor.execute(() -> userDao.update(user));
     }
 
     public void delete(User user) {
-        new DeleteUserAsyncTask(userDao).execute(user);
+        executor.execute(() -> userDao.delete(user));
     }
 
     public LiveData<User> getUserById(long userId) {
@@ -37,44 +46,8 @@ public class UserRepository {
         return userDao.login(email, password);
     }
 
-    private static class InsertUserAsyncTask extends AsyncTask<User, Void, Long> {
-        private UserDao userDao;
-
-        private InsertUserAsyncTask(UserDao userDao) {
-            this.userDao = userDao;
-        }
-
-        @Override
-        protected Long doInBackground(User... users) {
-            return userDao.insert(users[0]);
-        }
-    }
-
-    private static class UpdateUserAsyncTask extends AsyncTask<User, Void, Void> {
-        private UserDao userDao;
-
-        private UpdateUserAsyncTask(UserDao userDao) {
-            this.userDao = userDao;
-        }
-
-        @Override
-        protected Void doInBackground(User... users) {
-            userDao.update(users[0]);
-            return null;
-        }
-    }
-
-    private static class DeleteUserAsyncTask extends AsyncTask<User, Void, Void> {
-        private UserDao userDao;
-
-        private DeleteUserAsyncTask(UserDao userDao) {
-            this.userDao = userDao;
-        }
-
-        @Override
-        protected Void doInBackground(User... users) {
-            userDao.delete(users[0]);
-            return null;
-        }
+    // Interface pour le callback d'insertion
+    public interface OnUserInsertedCallback {
+        void onUserInserted(long userId);
     }
 }
