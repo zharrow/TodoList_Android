@@ -85,4 +85,10 @@ public class ProfileViewModel extends AndroidViewModel {
     public void resetProfileUpdated() {
         profileUpdated.setValue(false);
     }
+
+    public void updateUser(User user) {
+        UserRepository userRepository = new UserRepository(getApplication());
+        userRepository.update(user);
+    }
+
 }

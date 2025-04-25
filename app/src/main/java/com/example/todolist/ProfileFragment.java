@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import com.google.android.material.textfield.TextInputEditText;
+
 
 import com.example.todolist.databinding.FragmentProfileBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -108,12 +110,6 @@ public class ProfileFragment extends Fragment {
             showThemeSelectionDialog();
         });
 
-        // Langue
-        binding.btnLanguage.setOnClickListener(v -> {
-            AnimationUtils.applyClickAnimation(v);
-            showLanguageSelectionDialog();
-        });
-
         // Charger l'état des notifications
         boolean notificationsEnabled = SharedPreferencesManager.areNotificationsEnabled(requireContext());
         binding.switchNotifications.setChecked(notificationsEnabled);
@@ -176,14 +172,63 @@ public class ProfileFragment extends Fragment {
     }
 
     private void showEditProfileDialog() {
-        // TODO: Implémenter le dialogue d'édition de profil
-        Toast.makeText(requireContext(), "Fonctionnalité à venir", Toast.LENGTH_SHORT).show();
+        profileViewModel.getCurrentUser().observe(getViewLifecycleOwner(), user -> {
+            if (user == null) return;
+
+            View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_profile, null);
+            TextInputEditText etUsername = dialogView.findViewById(R.id.etUsername);
+            TextInputEditText etEmail = dialogView.findViewById(R.id.etEmail);
+
+            etUsername.setText(user.getUsername());
+            etEmail.setText(user.getEmail());
+
+            new MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Modifier le profil")
+                    .setView(dialogView)
+                    .setPositiveButton("Enregistrer", (dialog, which) -> {
+                        String newUsername = etUsername.getText().toString().trim();
+                        String newEmail = etEmail.getText().toString().trim();
+
+                        if (!newUsername.isEmpty() && !newEmail.isEmpty()) {
+                            user.setUsername(newUsername);
+                            user.setEmail(newEmail);
+                            profileViewModel.updateUser(user);
+                            Toast.makeText(requireContext(), "Profil mis à jour", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(requireContext(), "Champs requis vides", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setNegativeButton("Annuler", null)
+                    .show();
+        });
     }
 
     private void showChangePasswordDialog() {
-        // TODO: Implémenter le dialogue de changement de mot de passe
-        Toast.makeText(requireContext(), "Fonctionnalité à venir", Toast.LENGTH_SHORT).show();
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_change_password, null);
+        TextInputEditText etOldPassword = dialogView.findViewById(R.id.etOldPassword);
+        TextInputEditText etNewPassword = dialogView.findViewById(R.id.etNewPassword);
+
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Changer le mot de passe")
+                .setView(dialogView)
+                .setPositiveButton("Changer", (dialog, which) -> {
+                    String oldPassword = etOldPassword.getText().toString();
+                    String newPassword = etNewPassword.getText().toString();
+
+                    profileViewModel.getCurrentUser().observe(getViewLifecycleOwner(), user -> {
+                        if (user != null && user.getPassword().equals(oldPassword)) {
+                            user.setPassword(newPassword);
+                            profileViewModel.updateUser(user);
+                            Toast.makeText(requireContext(), "Mot de passe mis à jour", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(requireContext(), "Ancien mot de passe incorrect", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                })
+                .setNegativeButton("Annuler", null)
+                .show();
     }
+
 
     private void toggleNotifications() {
         boolean currentState = binding.switchNotifications.isChecked();
