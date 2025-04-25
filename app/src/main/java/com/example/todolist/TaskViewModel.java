@@ -61,36 +61,19 @@ public class TaskViewModel extends AndroidViewModel {
             return;
         }
 
-        backgroundExecutor.execute(() -> {
-            // Determine the category to use
-            long finalCategoryId;
-            if (categoryId == null || categoryId == -1) {
-                // Get or create default category synchronously
-                Category defaultCategory = categoryRepository.getOrCreateDefaultCategory(currentUserId);
-                finalCategoryId = defaultCategory.getId();
+        // Utiliser une catégorie par défaut si aucune n'est fournie
+        long finalCategoryId = categoryId != null && categoryId != -1 ? categoryId : 1; // Utiliser l'ID 1 par défaut
+
+        // Créer et insérer la tâche directement
+        Task task = new Task(title, description, dueDate, priority, finalCategoryId, currentUserId);
+
+        taskRepository.insert(task, taskId -> {
+            if (taskId > 0) {
+                taskSaved.setValue(true);
             } else {
-                // Verify the provided category exists
-                Category category = categoryRepository.getCategoryById(categoryId).getValue();
-                if (category == null) {
-                    // If category doesn't exist, use default
-                    Category defaultCategory = categoryRepository.getOrCreateDefaultCategory(currentUserId);
-                    finalCategoryId = defaultCategory.getId();
-                } else {
-                    finalCategoryId = categoryId;
-                }
+                errorMessage.setValue("Erreur lors de la sauvegarde de la tâche");
             }
-
-            // Create and insert the task
-            Task task = new Task(title, description, dueDate, priority, finalCategoryId, currentUserId);
-
-            taskRepository.insert(task, taskId -> {
-                if (taskId > 0) {
-                    taskSaved.setValue(true);
-                } else {
-                    errorMessage.setValue("Erreur lors de la sauvegarde de la tâche");
-                }
-                isLoading.setValue(false);
-            });
+            isLoading.setValue(false);
         });
     }
 
