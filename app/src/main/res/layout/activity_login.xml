@@ -140,7 +140,7 @@
         app:layout_constraintTop_toTopOf="@+id/tv_register_prompt" />
 
     <TextView
-        android:id="@+id/tv_error"
+        android:id="@+id/tvError"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
