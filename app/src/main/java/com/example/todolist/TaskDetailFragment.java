@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -202,19 +203,30 @@ public class TaskDetailFragment extends Fragment {
     }
 
     private void completeTask() {
-        taskViewModel.getTaskById(taskId).observe(getViewLifecycleOwner(), task -> {
-            if (task != null) {
-                taskViewModel.toggleTaskCompletion(task);
-                updateCompleteButton(!task.isCompleted());
+        // Créer une variable pour stocker l'observateur afin de pouvoir le supprimer
+        final Observer<Task> taskObserver = new Observer<Task>() {
+            @Override
+            public void onChanged(Task task) {
+                if (task != null) {
+                    // Supprimer l'observateur après la première notification
+                    taskViewModel.getTaskById(taskId).removeObserver(this);
 
-                // Utiliser la bonne méthode avec le bon type
-                if (task.isCompleted()) {
-                    Toast.makeText(requireContext(), "Tâche marquée comme non terminée", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(requireContext(), R.string.task_completed, Toast.LENGTH_SHORT).show();
+                    // Inverser l'état de complétion
+                    taskViewModel.toggleTaskCompletion(task);
+                    updateCompleteButton(!task.isCompleted());
+
+                    // Afficher le bon message
+                    if (task.isCompleted()) {
+                        Toast.makeText(requireContext(), "Tâche marquée comme non terminée", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(requireContext(), R.string.task_completed, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
-        });
+        };
+
+        // Observer une seule fois
+        taskViewModel.getTaskById(taskId).observe(getViewLifecycleOwner(), taskObserver);
     }
 
     private void showDeleteTaskDialog() {
