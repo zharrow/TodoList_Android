@@ -45,16 +45,6 @@ public class SharedPreferencesManager {
         return getSharedPreferences(context).getString(KEY_THEME, "system");
     }
 
-    public static void saveLanguage(Context context, String language) {
-        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putString(KEY_LANGUAGE, language);
-        editor.apply();
-    }
-
-    public static String getLanguage(Context context) {
-        return getSharedPreferences(context).getString(KEY_LANGUAGE, "system");
-    }
-
     public static void saveNotificationsEnabled(Context context, boolean enabled) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.putBoolean(KEY_NOTIFICATIONS, enabled);
@@ -64,6 +54,8 @@ public class SharedPreferencesManager {
     public static boolean areNotificationsEnabled(Context context) {
         return getSharedPreferences(context).getBoolean(KEY_NOTIFICATIONS, true);
     }
+
+
 
     public static void setFirstLaunch(Context context, boolean isFirstLaunch) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();

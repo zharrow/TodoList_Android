@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -17,6 +18,23 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private NavController navController;
+    private void applyTheme(String theme) {
+        switch (theme) {
+            case "light":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO); // Mode clair
+                break;
+            case "dark":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES); // Mode sombre
+                break;
+            case "system":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM); // Suivre le système
+                break;
+            default:
+                // Par défaut, suivre le mode système
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                break;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Configuration du FAB
         setupFab();
+
+        String currentTheme = SharedPreferencesManager.getTheme(this);
+        applyTheme(currentTheme);
 
         // Assurez-vous que le FAB est visible par défaut
         binding.fab.setVisibility(View.VISIBLE);

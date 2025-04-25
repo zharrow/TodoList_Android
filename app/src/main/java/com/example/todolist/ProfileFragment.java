@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.textfield.TextInputEditText;
+import androidx.appcompat.app.AppCompatDelegate;
 
 
 import com.example.todolist.databinding.FragmentProfileBinding;
@@ -135,21 +136,6 @@ public class ProfileFragment extends Fragment {
         }
         binding.tvThemeValue.setText(themeText);
 
-        // Langue
-        String currentLanguage = SharedPreferencesManager.getLanguage(requireContext());
-        String languageText;
-        switch (currentLanguage) {
-            case "en":
-                languageText = getString(R.string.language_english);
-                break;
-            case "fr":
-                languageText = getString(R.string.language_french);
-                break;
-            default:
-                languageText = getString(R.string.language_system);
-                break;
-        }
-        binding.tvLanguageValue.setText(languageText);
     }
 
     private void showLogoutConfirmationDialog() {
@@ -267,38 +253,20 @@ public class ProfileFragment extends Fragment {
                 .setNegativeButton(R.string.cancel, null)
                 .show();
     }
-
-    private void showLanguageSelectionDialog() {
-        final String[] languages = {
-                getString(R.string.language_system),
-                getString(R.string.language_french),
-                getString(R.string.language_english)
-        };
-
-        final String[] languageValues = {"system", "fr", "en"};
-
-        String currentLanguage = SharedPreferencesManager.getLanguage(requireContext());
-        int selectedIndex = 0;
-        for (int i = 0; i < languageValues.length; i++) {
-            if (languageValues[i].equals(currentLanguage)) {
-                selectedIndex = i;
+    private void applyTheme(String theme) {
+        switch (theme) {
+            case "light":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO); // Mode clair
                 break;
-            }
+            case "dark":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES); // Mode sombre
+                break;
+            default:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM); // Suivre le thème du système
+                break;
         }
-
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.language)
-                .setSingleChoiceItems(languages, selectedIndex, (dialog, which) -> {
-                    SharedPreferencesManager.saveLanguage(requireContext(), languageValues[which]);
-                    binding.tvLanguageValue.setText(languages[which]);
-                    dialog.dismiss();
-
-                    // TODO: Appliquer la nouvelle langue
-                    Toast.makeText(requireContext(), "Langue mise à jour", Toast.LENGTH_SHORT).show();
-                })
-                .setNegativeButton(R.string.cancel, null)
-                .show();
     }
+
 
     @Override
     public void onDestroyView() {
